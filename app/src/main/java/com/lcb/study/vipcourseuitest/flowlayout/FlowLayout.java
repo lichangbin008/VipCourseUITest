@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ${lichangbin} on 2020/7/7.
+ * 自定义流式布局
  */
 public class FlowLayout extends ViewGroup {
 
@@ -37,9 +37,19 @@ public class FlowLayout extends ViewGroup {
         return new MarginLayoutParams(getContext(), attributeSet);
     }
 
+    //在被调用这个方法之前   它的父容器  已经把它的测量模式改成了当前控件的测量模式
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        
+        //获取到父容器 给我们的参考值
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        //获取到自己的测量模式
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+        //保存当前控件的里面子控件的总宽高
+        int childCountWidth = 0;
+        int childCountHeight = 0;
     }
 
     @Override
