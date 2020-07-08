@@ -2,7 +2,6 @@ package com.lcb.study.vipcourseuitest.flowlayout;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -78,7 +77,7 @@ public class FlowLayout extends ViewGroup {
                 iChileHeight = childAt.getMeasuredHeight() + params.topMargin + params.bottomMargin;
 
                 //判断当前子控件的累加长度是否超出实际宽度
-                if (iChildWidth + lineCountWidth > widthSize) {//换行
+                if (iChildWidth + lineCountWidth > widthSize - getPaddingLeft() - getPaddingRight()) {//换行
                     //先处理换行之前的逻辑
 
                     //如果需要换行 我们就要保存一行的信息
@@ -122,8 +121,10 @@ public class FlowLayout extends ViewGroup {
         }
 
         //设置控件最终的大小
-        int measureWidth = widthMode == MeasureSpec.EXACTLY ? widthSize : childCountWidth;
-        int measureHeight = heightMode == MeasureSpec.EXACTLY ? heightSize : childCountHeight;
+        int measureWidth = widthMode == MeasureSpec.EXACTLY ?
+                widthSize : childCountWidth + getPaddingLeft() + getPaddingRight();
+        int measureHeight = heightMode == MeasureSpec.EXACTLY ?
+                heightSize : childCountHeight + getPaddingTop() + getPaddingBottom();
         setMeasuredDimension(measureWidth, measureHeight);
     }
 
@@ -132,9 +133,9 @@ public class FlowLayout extends ViewGroup {
         //摆放子控件的位置
         int left, top, bottom, right;
         //保存上一个控件的边距
-        int countLeft = 0;
+        int countLeft = 0 + getPaddingLeft();
         //保存上一行的高度的边距
-        int countTop = 0;
+        int countTop = 0 + getPaddingTop();
         //遍历每所有行
         for (List<View> views : list) {
             //遍历每一行的控件
@@ -147,12 +148,12 @@ public class FlowLayout extends ViewGroup {
                 bottom = top + view.getMeasuredHeight();
                 view.layout(left, top, right, bottom);
 
-                countLeft+=view.getMeasuredWidth()+params.leftMargin+params.rightMargin;
+                countLeft += view.getMeasuredWidth() + params.leftMargin + params.rightMargin;
             }
             //获取到当前这一行的position
             int i = list.indexOf(views);
-            countLeft=0;
-            countTop+= listLineHeight.get(i);
+            countLeft = 0 + getPaddingLeft();
+            countTop += listLineHeight.get(i);
         }
         list.clear();
         listLineHeight.clear();
