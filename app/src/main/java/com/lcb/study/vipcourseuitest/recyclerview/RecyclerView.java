@@ -2,6 +2,7 @@ package com.lcb.study.vipcourseuitest.recyclerview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class RecyclerView extends ViewGroup {
 
+    private static final String TAG = "RecyclerView";
     //协调Adapter和回收池之间的工作
     private Adapter adapter;
 
@@ -31,6 +33,16 @@ public class RecyclerView extends ViewGroup {
 
     //控制onLayout初始化次数
     private boolean needRelayout = true;
+
+    //最小滑动距离
+    private int touchSlop;
+    //当前滑动的y值
+    private int currentY;
+    //y偏移量      内容偏移量
+    private int scrollY;
+    //view的弟一行  是占内容的几行
+    private int firstRow = 0;
+
 
     public RecyclerView(Context context) {
         super(context);
@@ -101,7 +113,7 @@ public class RecyclerView extends ViewGroup {
         int itemType = adapter.getItemViewType(row);
         //先从recycledViewPool中获取，如果没有再从adapter中获取
         //第一屏数据
-        ViewHolder viewHolder = recycledViewPool.getRecyclerView(itemType);
+        ViewHolder viewHolder = recycledViewPool.getRecycledView(itemType);
         if (viewHolder == null) {
             viewHolder = adapter.onCreateViewHolder(this, itemType);
         }
@@ -114,20 +126,97 @@ public class RecyclerView extends ViewGroup {
         return viewHolder;
     }
 
+    //滑动事件     点击事件    定向拦截       需 要 1  不需要 2
 
+    //难  事件   迈步 onTouchEvent 隔多少时间   px
+    //onTouchEvent
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        //滑动
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE: {
+                int y2 = (int) event.getRawY();
+                int diff = (int) (currentY - event.getRawY());
+                scrollBy(0, diff);
+            }
+        }
         return super.onTouchEvent(event);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return super.onInterceptTouchEvent(ev);
+        boolean intercept = false;
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                currentY = (int) ev.getRawY();
+                break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                //移动距离大于最小滑动距离才认为是滑动，不然按照点击事件处理
+                int y2 = (int) Math.abs(currentY - ev.getRawY());
+                if (y2 > touchSlop) {
+                    intercept = true;
+                }
+                break;
+            }
+        }
+        return intercept;
     }
 
+    //只对 canvas进行滚动
+    //容器重新摆放每一个子控件
     @Override
     public void scrollBy(int x, int y) {
-        super.scrollBy(x, y);
+        //摆放
+        scrollY += y;
+
+        //上滑
+        if (scrollY > 0) {
+            while (scrollY > heights[firstRow]) {
+                //上面个
+                //扔到回收池
+                //firstRow++
+                if (!viewList.isEmpty()) {
+                    removeView(viewList.remove(0));
+                }
+                scrollY -= heights[firstRow];
+                firstRow++;
+                Log.i(TAG, "移除一个元素 ");
+            }
+            while (getFilledHeight() < height) {
+                //需要被添加  滑动   肯定不是第一屏数据
+                int dataIndex = firstRow + viewList.size();
+                ViewHolder viewHolder = obtainView(dataIndex, width, heights[dataIndex]);
+                viewList.add(viewList.size(), viewHolder);
+                Log.i(TAG, "添加一个元素 ");
+            }
+//            上滑 顶端 溢出一个元素         底部 可能 不会添加的情况
+        }
+
+//        上滑        下一节课  摆放  下滑  +极限值判断  +  惯性滑动
+    }
+
+    private int getFilledHeight() {
+
+        return sumArray(heights, firstRow, viewList.size()) - scrollY;
+
+    }
+
+    //累加算法    firstIndex    firstIndex+count 结束  结果sum
+    private int sumArray(int array[], int firstIndex, int count) {
+        int sum = 0;
+        count += firstIndex;
+        for (int i = firstIndex; i < count; i++) {
+            sum += array[i];
+        }
+        return sum;
+    }
+
+    private void removeView(ViewHolder remove) {
+        //放入缓冲池中
+        recycledViewPool.putRecycledView(remove);
+        removeView(remove.itemView);
     }
 
     interface Adapter<VH extends ViewHolder> {

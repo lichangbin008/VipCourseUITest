@@ -18,7 +18,7 @@ public class RecycledViewPool {
     SparseArray<ScrapData> mScrap = new SparseArray<>();
 
     //get方法
-    public ViewHolder getRecyclerView(int type) {
+    public ViewHolder getRecycledView(int type) {
         ScrapData scrapData = mScrap.get(type);
         if (scrapData != null && !scrapData.mScrapHeap.isEmpty()) {
             //有值
@@ -31,7 +31,7 @@ public class RecycledViewPool {
     }
 
     //put方法
-    public void putRecyclerView(ViewHolder scrap){
+    public void putRecycledView(ViewHolder scrap){
         final int viewType=scrap.getmItemViewType();
         final ArrayList<ViewHolder> scrapHeap=getScrapDataForType(viewType).mScrapHeap;
         scrapHeap.add(scrap);
