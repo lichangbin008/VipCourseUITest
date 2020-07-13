@@ -4,8 +4,12 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.Scroller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +47,14 @@ public class RecyclerView extends ViewGroup {
     //view的弟一行  是占内容的几行
     private int firstRow = 0;
 
+    private  int maximumVelocity;
+
+    private  int minimumVelocity;
+
+    private Flinger flinger;
+    private VelocityTracker velocityTracker;
+
+
 
     public RecyclerView(Context context) {
         super(context);
@@ -54,6 +66,18 @@ public class RecyclerView extends ViewGroup {
 
     public RecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
+        this.viewList = new ArrayList<>();
+        this.needRelayout = true;
+        final ViewConfiguration configuration = ViewConfiguration.get(context);
+//    点击    28 -40  滑动
+        this.flinger = new Flinger(context);
+        this.touchSlop = configuration.getScaledTouchSlop();
+        this.maximumVelocity = configuration.getScaledMaximumFlingVelocity();
+        this.minimumVelocity = configuration.getScaledMinimumFlingVelocity();
     }
 
     /**
@@ -65,6 +89,9 @@ public class RecyclerView extends ViewGroup {
         this.adapter = adapter;
         needRelayout = true;
         recycledViewPool = new RecycledViewPool();
+        scrollY = 0;
+        firstRow = 0;
+        needRelayout = true;
         requestLayout();
     }
 
@@ -75,6 +102,8 @@ public class RecyclerView extends ViewGroup {
         //防止调用次数过多
         if (needRelayout || changed) {
             needRelayout = false;
+            viewList.clear();
+            removeAllViews();
             //走重新摆放
 
             //计算宽高
@@ -91,9 +120,13 @@ public class RecyclerView extends ViewGroup {
             //摆放 假设有20000个
             //摆放View 生成View
             int left, top = 0, right, bottom;
+
+            //                第一行不是从0开始
+            top = -scrollY;
             for (int i = 0; i < rowCount && top < height; i++) {
                 bottom = top + heights[i];
                 ViewHolder viewHolder = makeAndStep(i, 0, top, width, bottom);
+                viewList.add(viewHolder);
                 //                遍历条件
                 top = bottom;
             }
@@ -133,12 +166,38 @@ public class RecyclerView extends ViewGroup {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
+        if (velocityTracker == null) {
+            velocityTracker = VelocityTracker.obtain();
+        }
+        velocityTracker.addMovement(event);
+
         //滑动
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE: {
                 int y2 = (int) event.getRawY();
                 int diff = (int) (currentY - event.getRawY());
                 scrollBy(0, diff);
+            }
+            case MotionEvent.ACTION_UP:{
+                velocityTracker.computeCurrentVelocity(1000, maximumVelocity);
+
+                int velocityY = (int) velocityTracker.getYVelocity();
+
+                int initY = scrollY + sumArray(heights, 1, firstRow);
+                int maxY = Math.max(0, sumArray(heights, 0, heights.length) - height);
+//                判断是否开启 惯性滑动
+                if (Math.abs( velocityY) > minimumVelocity) {
+//                        线程  ---》自己看线程
+                    flinger.start(0,initY,0,velocityY,0,maxY);
+                }else {
+
+                    if (this.velocityTracker != null) {
+                        this.velocityTracker.recycle();
+                        this.velocityTracker = null;
+                    }
+
+                }
+                break;
             }
         }
         return super.onTouchEvent(event);
@@ -171,6 +230,10 @@ public class RecyclerView extends ViewGroup {
         //摆放
         scrollY += y;
 
+        //     scrollY取值   0 ---- 屏幕 的高度   0---无限大   2
+//修正一下  内容的总高度 是他的边界值
+        scrollY = scrollBounds(scrollY, firstRow, heights, height);
+
         //上滑
         if (scrollY > 0) {
             while (scrollY > heights[firstRow]) {
@@ -192,9 +255,38 @@ public class RecyclerView extends ViewGroup {
                 Log.i(TAG, "添加一个元素 ");
             }
 //            上滑 顶端 溢出一个元素         底部 可能 不会添加的情况
+        } else if (scrollY < 0) {
+            //            往下滑
+            while (!viewList.isEmpty() && getFilledHeight() - heights[firstRow + viewList.size() - 1] >= height) {
+                removeView(viewList.remove(viewList.size() - 1));
+            }
+
+            while (0 > scrollY) {
+                ViewHolder viewHolder = obtainView(firstRow - 1, width, heights[0]);
+                viewList.add(0, viewHolder);
+                firstRow--;
+                scrollY += heights[firstRow + 1];
+            }
         }
 
 //        上滑        下一节课  摆放  下滑  +极限值判断  +  惯性滑动
+
+        //        重新对一个子控件进行重新layout
+        repositionViews();
+    }
+
+    /**
+     * 重新摆放子控件
+     */
+    private void repositionViews() {
+        int left, top, right, bottom, i;
+        top =  - scrollY;
+        i = firstRow;
+        for (ViewHolder viewHolder   : viewList) {
+            bottom = top + heights[i++];
+            viewHolder.itemView.layout(0, top, width, bottom);
+            top = bottom;
+        }
     }
 
     private int getFilledHeight() {
@@ -211,6 +303,24 @@ public class RecyclerView extends ViewGroup {
             sum += array[i];
         }
         return sum;
+    }
+
+    private int scrollBounds(int scrollY, int firstRow, int sizes[], int viewSize) {
+        if (scrollY > 0) {
+            Log.i(TAG, " 上滑 scrollBounds: scrollY  " + scrollY + "  各项之和  " + sumArray(sizes, firstRow, sizes.length - firstRow) + "  receryView高度  " + viewSize);
+            //            往上滑  bug +
+            if (sumArray(sizes, firstRow, sizes.length - firstRow) - scrollY >viewSize ) {
+                scrollY = scrollY;
+            }else {
+                scrollY = sumArray(sizes, firstRow, sizes.length - firstRow) - viewSize;
+            }
+        }else {
+            //            往下滑  y  firstRow= 0    -
+            scrollY = Math.max(scrollY, -sumArray(sizes,0,firstRow));  //=0
+//            scrollY = Math.max(scrollY, 0);  //=
+            Log.i(TAG, "下滑  scrollBounds: scrollY  " + scrollY + "  各项之和  " + (-sumArray(sizes,0,firstRow)) );
+        }
+        return scrollY;
     }
 
     private void removeView(ViewHolder remove) {
@@ -230,5 +340,45 @@ public class RecyclerView extends ViewGroup {
         int getItemCount();
 
         int getHeight(int index);
+    }
+
+    class Flinger implements Runnable {
+        //        scrollBy   （移动的偏移量)  而不是速度
+        private Scroller scroller;
+        //
+        private int initY;
+
+        void start(int initX, int initY, int initialVelocityX, int initialVelocityY, int maxX, int maxY){
+            scroller.fling(initX, initY, initialVelocityX
+                    , initialVelocityY, 0, maxX, 0, maxY);
+            this.initY = initY;
+            post(this);
+        }
+        Flinger(Context context) {
+            scroller = new Scroller(context);
+
+        }
+        @Override
+        public void run() {
+            if (scroller.isFinished()) {
+                return;
+            }
+
+            boolean more=scroller.computeScrollOffset();
+//
+            int y = scroller.getCurrY();
+            int diffY = initY - y;
+            if (diffY != 0) {
+                scrollBy(0, diffY);
+                initY = y;
+            }
+            if (more) {
+                post(this);
+            }
+        }
+
+        boolean isFinished() {
+            return scroller.isFinished();
+        }
     }
 }
