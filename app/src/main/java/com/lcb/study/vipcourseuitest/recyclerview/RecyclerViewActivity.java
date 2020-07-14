@@ -25,7 +25,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.table);
 //        recyclerView.setAdapter(new MyAdapter());
-        recyclerView.setAdapter(new TwoAdapter(5000));
+        recyclerView.setAdapter(new TwoAdapter(20));
 
     }
 
@@ -57,7 +57,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return 20000;
+            return 20;
         }
 
         @Override

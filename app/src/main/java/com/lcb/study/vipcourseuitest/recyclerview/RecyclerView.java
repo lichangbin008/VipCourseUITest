@@ -54,6 +54,8 @@ public class RecyclerView extends ViewGroup {
     private Flinger flinger;
     private VelocityTracker velocityTracker;
 
+    //惯性滑动，线程
+
 
     public RecyclerView(Context context) {
         super(context);
@@ -178,7 +180,7 @@ public class RecyclerView extends ViewGroup {
                 scrollBy(0, diff);
             }
             case MotionEvent.ACTION_UP: {
-                velocityTracker.computeCurrentVelocity(1000, maximumVelocity);
+                velocityTracker.computeCurrentVelocity(1000);
 
                 int velocityY = (int) velocityTracker.getYVelocity();
 
@@ -186,7 +188,9 @@ public class RecyclerView extends ViewGroup {
                 int maxY = Math.max(0, sumArray(heights, 0, heights.length) - height);
 //                判断是否开启 惯性滑动
                 if (Math.abs(velocityY) > minimumVelocity) {
+//                    .0.00001px
 //                        线程  ---》自己看线程
+                    //惯性滑动
                     flinger.start(0, initY, 0, velocityY, 0, maxY);
                 } else {
 
@@ -232,8 +236,9 @@ public class RecyclerView extends ViewGroup {
         //     scrollY取值   0 ---- 屏幕 的高度   0---无限大   2
 //修正一下  内容的总高度 是他的边界值
         //极限值没有做
-        scrollY = scrollBounds(scrollY, firstRow, heights, height);
+//        scrollY = scrollBounds(scrollY, firstRow, heights, height);
 
+        scrollBounds();
         //上滑
         if (scrollY > 0) {
             while (scrollY > heights[firstRow]) {
@@ -329,23 +334,41 @@ public class RecyclerView extends ViewGroup {
         return sum;
     }
 
-    private int scrollBounds(int scrollY, int firstRow, int sizes[], int viewSize) {
-        if (scrollY > 0) {
-            Log.i(TAG, " 上滑 scrollBounds: scrollY  " + scrollY + "  各项之和  " + sumArray(sizes, firstRow, sizes.length - firstRow) + "  receryView高度  " + viewSize);
-            //            往上滑  bug +
-            if (sumArray(sizes, firstRow, sizes.length - firstRow) - scrollY > viewSize) {
+    //判断极限值
+    public void scrollBounds() {
+        if (scrollY < 0) {
+            //firstRow变成0
+            if (scrollY > -sumArray(heights, 0, firstRow)) {
                 scrollY = scrollY;
             } else {
-                scrollY = sumArray(sizes, firstRow, sizes.length - firstRow) - viewSize;
+                scrollY = -sumArray(heights, 0, firstRow);
             }
-        } else {
-            //            往下滑  y  firstRow= 0    -
-            scrollY = Math.max(scrollY, -sumArray(sizes, 0, firstRow));  //=0
-//            scrollY = Math.max(scrollY, 0);  //=
-            Log.i(TAG, "下滑  scrollBounds: scrollY  " + scrollY + "  各项之和  " + (-sumArray(sizes, 0, firstRow)));
+//            scrollY = Math.max(scrollY, -sumArray(heights, 0, firstRow));
+            //scrollY=0  正常滑动时，不会影响下滑，在下滑到了极限值 scrollY=0
+        }else {
+            if (sumArray(heights,firstRow,heights.length-firstRow)-scrollY<height){
+//                scrollY应该是一个定值
+                scrollY= sumArray(heights,firstRow,heights.length-firstRow)-height;
+            }
         }
-        return scrollY;
     }
+//    private int scrollBounds(int scrollY, int firstRow, int sizes[], int viewSize) {
+//        if (scrollY > 0) {
+//            Log.i(TAG, " 上滑 scrollBounds: scrollY  " + scrollY + "  各项之和  " + sumArray(sizes, firstRow, sizes.length - firstRow) + "  receryView高度  " + viewSize);
+//            //            往上滑  bug +
+//            if (sumArray(sizes, firstRow, sizes.length - firstRow) - scrollY > viewSize) {
+//                scrollY = scrollY;
+//            } else {
+//                scrollY = sumArray(sizes, firstRow, sizes.length - firstRow) - viewSize;
+//            }
+//        } else {
+//            //            往下滑  y  firstRow= 0    -
+//            scrollY = Math.max(scrollY, -sumArray(sizes, 0, firstRow));  //=0
+////            scrollY = Math.max(scrollY, 0);  //=
+//            Log.i(TAG, "下滑  scrollBounds: scrollY  " + scrollY + "  各项之和  " + (-sumArray(sizes, 0, firstRow)));
+//        }
+//        return scrollY;
+//    }
 
     private void removeView(ViewHolder remove) {
         //放入缓冲池中
@@ -391,12 +414,13 @@ public class RecyclerView extends ViewGroup {
             }
 
             boolean more = scroller.computeScrollOffset();
-//
+            //滑动一点点
             int y = scroller.getCurrY();
-            int diffY = initY - y;
+            int diffY = initY - y; //>0
             if (diffY != 0) {
+                //滚动 scrollBy 滚动画布
                 scrollBy(0, diffY);
-                initY = y;
+//                initY = y;
             }
             if (more) {
                 post(this);
