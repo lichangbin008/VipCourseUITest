@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.lcb.study.vipcourseuitest.flowlayout.FlowLayoutActivity;
+import com.lcb.study.vipcourseuitest.motionevent.EventDispatchActivity;
 import com.lcb.study.vipcourseuitest.recyclerview.RecyclerViewActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btFlow;
 
     private Button btRecyclerView;
+
+    private Button btEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         btFlow = findViewById(R.id.bt_flow);
         btRecyclerView = findViewById(R.id.bt_recyclerview);
+        btEvent=findViewById(R.id.bt_event);
     }
 
     private void initListener(){
@@ -43,6 +47,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, RecyclerViewActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, EventDispatchActivity.class);
                 startActivity(intent);
             }
         });
