@@ -9,9 +9,13 @@ import java.util.List;
 public class ViewGroup extends View {
 
     //容器View
-    List<View> childList=new ArrayList<>();
+    List<View> childList = new ArrayList<>();
 
-    private View[] mChildren=new View[0];
+    private View[] mChildren = new View[0];
+
+    public ViewGroup(int left, int top, int right, int bottom) {
+        super(left, top, right, bottom);
+    }
 
     public void addView(View view) {
         if (view == null) {
@@ -28,37 +32,39 @@ public class ViewGroup extends View {
 
         boolean intercepted = onInterceptTouchEvent(motionEvent);
 
-        int actionMasked=motionEvent.getActionMasked();
+        int actionMasked = motionEvent.getActionMasked();
 
-        if (!intercepted&&actionMasked!=MotionEvent.ACTION_CANCEL){
+        if (!intercepted && actionMasked != MotionEvent.ACTION_CANCEL) {
             //分发事件，子view，合适的x,y
             final View[] children = mChildren;
 //                耗时  概率大一些
-            for (int i = children.length-1; i >= 0; i--) {
+            for (int i = children.length - 1; i >= 0; i--) {
                 View child = mChildren[i];
 
-//                View能够接收到事件
+//                View不能够接收到事件
                 if (!child.isContainer(motionEvent.getX(), motionEvent.getY())) {
                     continue;
                 }
-                //分发事件
-                if (dispatchTransformedTouchEvent(motionEvent,child)){
-
+                //能接收到事件，分发事件
+                if (dispatchTransformedTouchEvent(motionEvent, child)) {
+                    //证明有子控件进行消费行为，不需要再遍历了
+                    handled = true;
+                    break;
                 }
             }
 
         }
-        dispatchTransformedTouchEvent(motionEvent,null);
 
-        if (intercepted){
-            dispatchTransformedTouchEvent(motionEvent,null);
+        if (intercepted) {
+            handled = dispatchTransformedTouchEvent(motionEvent, null);
         }
-        return false;
+        return handled;
 
 //        onTouchEvent(motionEvent);
     }
 
-    private boolean onInterceptTouchEvent(MotionEvent event) {
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        return true;
     }
 
     //分发处理 子控件  View
@@ -66,11 +72,24 @@ public class ViewGroup extends View {
     //传值不为null，分发给子view，坐标值位置的转换
     //传值为null，自己调用ontouchevent方法
     private boolean dispatchTransformedTouchEvent(MotionEvent motionEvent, View child) {
-        if (child==null){
-            super.dispatchTouchEvent(motionEvent);
-        }else {
-            child.dispatchTouchEvent(motionEvent);
+        boolean handled = false;
+        //        当前View消费了
+        if (child == null) {
+            handled = super.dispatchTouchEvent(motionEvent);
+        } else {
+            handled = child.dispatchTouchEvent(motionEvent);
         }
-        return true;
+        return handled;
+    }
+
+    private String name;
+
+    @Override
+    public String toString() {
+        return "" + name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
