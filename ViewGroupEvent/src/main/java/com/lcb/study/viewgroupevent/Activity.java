@@ -10,12 +10,13 @@ public class Activity {
     public static void main(String[] arg) {
 
         //初始化布局
-        ViewGroup viewGroup = new ViewGroup(0, 0, 1080, 1920){
-            @Override
-            public boolean onInterceptTouchEvent(MotionEvent event) {
-                return false;
-            }
-        };
+        ViewGroup viewGroup = new ViewGroup(0, 0, 1080, 1920);
+//        {
+//            @Override
+//            public boolean onInterceptTouchEvent(MotionEvent event) {
+//                return false;
+//            }
+//        };
         viewGroup.setName("parent container ");
         viewGroup.setmOnTouchListener(new OnTouchListener() {
             @Override
@@ -36,7 +37,7 @@ public class Activity {
                 return false;
             }
         });
-        viewGroup1.addView(viewGroup1);
+
 
 
         View view = new View(0, 0, 200, 200);
@@ -46,8 +47,16 @@ public class Activity {
                 System.out.println("view  accept onClick  ");
             }
         });
-        viewGroup.addView(view);
+        viewGroup1.addView(view);
+        viewGroup.addView(viewGroup1);
 
+//        view.setmOnTouchListener(new OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                System.out.println("view   OnTouch ");
+//                return true;
+//            }
+//        });
 
 
         MotionEvent motionEvent = new MotionEvent(100, 100);

@@ -49,22 +49,71 @@ public class ViewGroup extends View {
                 if (dispatchTransformedTouchEvent(motionEvent, child)) {
                     //证明有子控件进行消费行为，不需要再遍历了
                     handled = true;
+                    addTouchTarget(child);
                     break;
                 }
             }
 
         }
 
-        if (intercepted) {
+        //move
+        if (mFirstTouchTarget == null) {
             handled = dispatchTransformedTouchEvent(motionEvent, null);
+        } else {
+            TouchTarget target = mFirstTouchTarget;
+            while (target != null) {
+                final TouchTarget next = target.next;
+                if (dispatchTransformedTouchEvent(motionEvent, target.child)) {
+                    handled = true;
+                }
+                target = next;
+            }
         }
+
         return handled;
 
 //        onTouchEvent(motionEvent);
     }
 
+    private TouchTarget addTouchTarget(View child) {
+        final TouchTarget target = TouchTarget.obtain(child);
+        target.next = mFirstTouchTarget;
+        mFirstTouchTarget = target;
+        return target;
+    }
+
+    private TouchTarget mFirstTouchTarget;
+
+    static class TouchTarget {
+        private View child;
+        public TouchTarget next;
+
+        //为防止内存抖动，使用回收池，通过单向链表
+        private static TouchTarget sRecycleBin;
+        private static int sRecyledCount;
+        private static final Object sRecycleLock = new Object[0];
+
+        //        up事件
+        public static TouchTarget obtain(View child) {
+            TouchTarget target;
+            synchronized (sRecycleLock) {
+                if (sRecycleBin == null) {
+                    target = new TouchTarget();
+                } else {
+                    target = sRecycleBin;
+                }
+                sRecycleBin = target.next;
+                sRecyledCount--;
+                target.next = null;
+            }
+            target.child = child;
+            return target;
+        }
+
+    }
+
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        return true;
+        return false;
     }
 
     //分发处理 子控件  View
