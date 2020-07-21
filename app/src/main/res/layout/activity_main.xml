@@ -24,6 +24,12 @@
         android:id="@+id/bt_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="时间分发"/>
+        android:text="事件分发"/>
+
+    <Button
+        android:id="@+id/bt_animation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="属性动画"/>
 
 </LinearLayout>
