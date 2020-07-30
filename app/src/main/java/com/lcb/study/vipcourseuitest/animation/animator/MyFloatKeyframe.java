@@ -11,9 +11,12 @@ public class MyFloatKeyframe {
     //执行上面的百分比，对应的具体值
     float mValue;
 
+    Class mValueType;
+
     public MyFloatKeyframe(float mFraction, float mValue) {
         this.mFraction = mFraction;
         this.mValue = mValue;
+        mValueType = float.class;
     }
 
     public float getValue() {

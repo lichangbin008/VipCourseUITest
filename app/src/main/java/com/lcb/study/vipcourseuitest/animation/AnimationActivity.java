@@ -21,7 +21,7 @@ public class AnimationActivity extends AppCompatActivity {
 
     public void scale(View view) {
         MyObjectAnimator objectAnimator = MyObjectAnimator.
-                ofFloat(button, "scaleX", 1f, 2f);
+                ofFloat(button, "scaleX", 1.0f, 2.0f);
         objectAnimator.setDuration(3000);
         objectAnimator.setInterpolator(new TimeInterpolator() {
             @Override
@@ -32,7 +32,7 @@ public class AnimationActivity extends AppCompatActivity {
         });
         objectAnimator.start();
         MyObjectAnimator objectAnimator2 = MyObjectAnimator.
-                ofFloat(button, "scaleY", 1f, 2f);
+                ofFloat(button, "scaleY", 1.0f, 2.0f);
         objectAnimator2.setDuration(3000);
         objectAnimator2.setInterpolator(new TimeInterpolator() {
             @Override

@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.lcb.study.vipcourseuitest.animation.AnimationActivity;
 import com.lcb.study.vipcourseuitest.flowlayout.FlowLayoutActivity;
+import com.lcb.study.vipcourseuitest.livedata.LiveDataActivity;
 import com.lcb.study.vipcourseuitest.motionevent.EventDispatchActivity;
 import com.lcb.study.vipcourseuitest.recyclerview.RecyclerViewActivity;
 
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btAnimation;
 
+    private Button btLiveData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,11 +37,12 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         btFlow = findViewById(R.id.bt_flow);
         btRecyclerView = findViewById(R.id.bt_recyclerview);
-        btEvent=findViewById(R.id.bt_event);
-        btAnimation=findViewById(R.id.bt_animation);
+        btEvent = findViewById(R.id.bt_event);
+        btAnimation = findViewById(R.id.bt_animation);
+        btLiveData = findViewById(R.id.bt_livedata);
     }
 
-    private void initListener(){
+    private void initListener() {
         btFlow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AnimationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btLiveData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LiveDataActivity.class);
                 startActivity(intent);
             }
         });

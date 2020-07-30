@@ -27,7 +27,7 @@ public class MyKeyframeSet {
         MyFloatKeyframe keyframes[] = new MyFloatKeyframe[Math.max(numKeyframes, 2)];
         if (numKeyframes == 1) {
             keyframes[0] = new MyFloatKeyframe(0, values[0]);//第一个关键帧比较特殊
-            keyframes[1] = new MyFloatKeyframe(1f, values[0]);
+            keyframes[1] = new MyFloatKeyframe(1.0f, values[0]);
         } else {
             keyframes[0] = new MyFloatKeyframe(0, values[0]);//第一个关键帧比较特殊
             for (int i = 1; i < numKeyframes; i++) {
@@ -40,7 +40,7 @@ public class MyKeyframeSet {
 
     public Object getValue(float fraction) {
         MyFloatKeyframe prevKeyframe = mFirstKeyFrame;
-        for (int i = 1; i < mKeyFrames.size(); ++i) {
+        for (int i = 1; i < mKeyFrames.size(); i++) {
             MyFloatKeyframe nextKeyFrame = mKeyFrames.get(i);
             if (fraction < nextKeyFrame.getFraction()) {
                 //这一个区间

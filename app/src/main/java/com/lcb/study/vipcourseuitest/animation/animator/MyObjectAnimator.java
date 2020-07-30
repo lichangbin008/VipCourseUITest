@@ -74,10 +74,9 @@ public class MyObjectAnimator implements VSYNCManager.AnimationFrameCallback {
             } else {
                 VSYNCManager.getInstance().remove(this);
             }
-
         }
 
-
+        myFloatPropertyValuesHolder.setAnimatedValue(target.get(), fraction);
         return false;
     }
 }

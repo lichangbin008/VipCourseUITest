@@ -23,11 +23,12 @@ public class MyFloatPropertyValuesHolder {
     //属性，反射执行动画效果 scaleX setScaleX
     public MyFloatPropertyValuesHolder(String propertyName, float... values) {
         //初始化关键帧集合 初始化 method 方法
+        this.mPropertyName = propertyName;
+        mValueType = float.class;
         mKeyframes = MyKeyframeSet.ofFloat(values);
-        mPropertyName = propertyName;
     }
 
-    public static MyFloatPropertyValuesHolder ofFloat(String propertyName, float... values){
+    public static MyFloatPropertyValuesHolder ofFloat(String propertyName, float... values) {
         MyFloatPropertyValuesHolder myObjectAnimator = new MyFloatPropertyValuesHolder(propertyName, values);
         return myObjectAnimator;
     }
@@ -48,7 +49,6 @@ public class MyFloatPropertyValuesHolder {
     public void setAnimatedValue(View target, float fraction) {
         Object value = mKeyframes.getValue(fraction);
         try {
-//            View.setScaleX(101px)
             mSetter.invoke(target, value);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
