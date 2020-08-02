@@ -12,6 +12,7 @@ import com.lcb.study.vipcourseuitest.flowlayout.FlowLayoutActivity;
 import com.lcb.study.vipcourseuitest.livedata.LiveDataActivity;
 import com.lcb.study.vipcourseuitest.motionevent.EventDispatchActivity;
 import com.lcb.study.vipcourseuitest.recyclerview.RecyclerViewActivity;
+import com.lcb.study.vipcourseuitest.viewmodel.ViewModelActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btAnimation;
 
     private Button btLiveData;
+
+    private Button btViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         btEvent = findViewById(R.id.bt_event);
         btAnimation = findViewById(R.id.bt_animation);
         btLiveData = findViewById(R.id.bt_livedata);
+        btViewModel = findViewById(R.id.bt_viewmodel);
     }
 
     private void initListener() {
@@ -79,6 +83,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LiveDataActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btViewModel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ViewModelActivity.class);
                 startActivity(intent);
             }
         });
