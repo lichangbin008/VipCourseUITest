@@ -12,6 +12,7 @@ import com.lcb.study.vipcourseuitest.flowlayout.FlowLayoutActivity;
 import com.lcb.study.vipcourseuitest.livedata.LiveDataActivity;
 import com.lcb.study.vipcourseuitest.motionevent.EventDispatchActivity;
 import com.lcb.study.vipcourseuitest.recyclerview.RecyclerViewActivity;
+import com.lcb.study.vipcourseuitest.viewmodel.DatabindingActivity;
 import com.lcb.study.vipcourseuitest.viewmodel.ViewModelActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         btViewModel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ViewModelActivity.class);
+                Intent intent = new Intent(MainActivity.this, DatabindingActivity.class);
                 startActivity(intent);
             }
         });

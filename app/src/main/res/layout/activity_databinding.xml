@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+    <!-- 绑定数据源 -->
+    <data>
+        <variable
+            name="user"
+            type="com.lcb.study.vipcourseuitest.viewmodel.model.User" />
+        <variable
+            name="user_2"
+            type="com.lcb.study.vipcourseuitest.viewmodel.model.User_2" />
+        <!--不识别尖括号所以要用转移符-->
+        <variable
+            name="name"
+            type="androidx.databinding.ObservableField&lt;String&gt;" />
+        <variable
+            name="age"
+            type="androidx.databinding.ObservableField&lt;String&gt;" />
+
+        <variable
+            name="viewModel"
+            type="com.lcb.study.vipcourseuitest.viewmodel.MyViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@{viewModel.user.name}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:text="@{viewModel.user.age==null?viewModel.user.age:viewModel.user.name}"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <!--加一个等号实现双向绑定-->
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@={viewModel.user.name}"/>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="改变参数"/>
+    </LinearLayout>
+
+</layout>
