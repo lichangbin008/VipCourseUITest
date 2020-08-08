@@ -9,6 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".navigation.NavigationActivity">
+            <!-- 为Activity设置<nav-graph/>标签 -->
+            <nav-graph android:value="@navigation/nav_graph" />
+        </activity>
         <activity android:name=".viewmodel.DatabindingActivity">
         </activity>
         <activity android:name=".viewmodel.ViewModelActivity">

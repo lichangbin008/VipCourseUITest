@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/nav_graph"
+            app:startDestination="@id/afragment"
+            tools:ignore="UnusedNavigation">
+
+    <action
+        android:id="@+id/to_cfragment"
+        app:destination="@+id/cfragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim">
+    </action>
+
+    <action
+        android:id="@+id/to_afragment"
+        app:destination="@+id/afragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim">
+    </action>
+    <action
+        android:id="@+id/to_bfragment"
+        app:destination="@+id/bfragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim">
+    </action>
+    <action
+        android:id="@+id/to_dfragment"
+        app:destination="@+id/dfragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim">
+    </action>
+    <action
+        android:id="@+id/to_efragment"
+        app:destination="@+id/efragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim">
+    </action>
+
+    <fragment
+        android:id="@+id/afragment"
+        android:name="com.lcb.study.vipcourseuitest.navigation.fragment.AFragment"
+        android:label="afragment"
+        tools:layout="@layout/fragment_a">
+
+    </fragment>
+    <fragment
+        android:id="@+id/bfragment"
+        android:name="com.lcb.study.vipcourseuitest.navigation.fragment.BFragment"
+        android:label="bfragment"
+        tools:layout="@layout/fragment_b">
+
+        <argument android:name="name" android:defaultValue="max"/>
+        <!-- 为destination添加<deepLink/>标签 -->
+        <deepLink app:uri="www.YourWebsite.com/{params}" />
+    </fragment>
+    <fragment
+        android:id="@+id/cfragment"
+        android:name="com.lcb.study.vipcourseuitest.navigation.fragment.CFragment"
+        android:label="cfragment"
+        tools:layout="@layout/fragment_c">
+    </fragment>
+    <fragment
+        android:id="@+id/dfragment"
+        android:name="com.lcb.study.vipcourseuitest.navigation.fragment.DFragment"
+        android:label="dfragment"
+        tools:layout="@layout/fragment_d">
+    </fragment>
+    <fragment
+        android:id="@+id/efragment"
+        android:name="com.lcb.study.vipcourseuitest.navigation.fragment.EFragment"
+        android:label="fragment_e"
+        tools:layout="@layout/fragment_e"/>
+</navigation>

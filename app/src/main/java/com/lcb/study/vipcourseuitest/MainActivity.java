@@ -11,9 +11,9 @@ import com.lcb.study.vipcourseuitest.animation.AnimationActivity;
 import com.lcb.study.vipcourseuitest.flowlayout.FlowLayoutActivity;
 import com.lcb.study.vipcourseuitest.livedata.LiveDataActivity;
 import com.lcb.study.vipcourseuitest.motionevent.EventDispatchActivity;
+import com.lcb.study.vipcourseuitest.navigation.NavigationActivity;
 import com.lcb.study.vipcourseuitest.recyclerview.RecyclerViewActivity;
 import com.lcb.study.vipcourseuitest.viewmodel.DatabindingActivity;
-import com.lcb.study.vipcourseuitest.viewmodel.ViewModelActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btLiveData;
 
     private Button btViewModel;
+
+    private Button btNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         btAnimation = findViewById(R.id.bt_animation);
         btLiveData = findViewById(R.id.bt_livedata);
         btViewModel = findViewById(R.id.bt_viewmodel);
+        btNavigation=findViewById(R.id.bt_navigation);
     }
 
     private void initListener() {
@@ -92,6 +95,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, DatabindingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NavigationActivity.class);
                 startActivity(intent);
             }
         });
