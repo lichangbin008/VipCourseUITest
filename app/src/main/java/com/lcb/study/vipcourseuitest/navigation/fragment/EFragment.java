@@ -8,11 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.lcb.courses.annotation.FragmentDestination;
 import com.lcb.study.vipcourseuitest.R;
 
 
@@ -24,9 +26,10 @@ import com.lcb.study.vipcourseuitest.R;
  * Use the {@link EFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@FragmentDestination(pageUrl = "efragment",asStarter = false)
 public class EFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+//    private OnFragmentInteractionListener mListener;
 
     Button button;
 
@@ -53,6 +56,7 @@ public class EFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.e("MN--->","onCreateView");
         return inflater.inflate(R.layout.fragment_e, container, false);
     }
 
@@ -70,26 +74,26 @@ public class EFragment extends Fragment {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {
-        if (mListener != null) {
-            mListener.onFragmentInteraction("from EFragment");
-        }
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction("from EFragment");
+//        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+//        mListener = null;
     }
 
     /**
@@ -102,8 +106,8 @@ public class EFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(String name);
-    }
+//    public interface OnFragmentInteractionListener {
+//        // TODO: Update argument type and name
+//        void onFragmentInteraction(String name);
+//    }
 }

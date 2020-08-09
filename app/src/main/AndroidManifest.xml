@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".navigation.NavigationActivity">
             <!-- 为Activity设置<nav-graph/>标签 -->
-            <nav-graph android:value="@navigation/nav_graph" />
+            <!--<nav-graph android:value="@navigation/nav_graph" />-->
         </activity>
         <activity android:name=".viewmodel.DatabindingActivity">
         </activity>
