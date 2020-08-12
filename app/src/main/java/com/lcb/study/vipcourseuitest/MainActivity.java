@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.lcb.study.vipcourseuitest.animation.AnimationActivity;
+import com.lcb.study.vipcourseuitest.bubble.BubbleActivity;
 import com.lcb.study.vipcourseuitest.flowlayout.FlowLayoutActivity;
 import com.lcb.study.vipcourseuitest.livedata.LiveDataActivity;
 import com.lcb.study.vipcourseuitest.motionevent.EventDispatchActivity;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btNavigation;
 
+    private Button btBubble;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         btLiveData = findViewById(R.id.bt_livedata);
         btViewModel = findViewById(R.id.bt_viewmodel);
         btNavigation=findViewById(R.id.bt_navigation);
+        btBubble=findViewById(R.id.bt_bubble);
     }
 
     private void initListener() {
@@ -103,6 +107,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, NavigationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btBubble.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, BubbleActivity.class);
                 startActivity(intent);
             }
         });
