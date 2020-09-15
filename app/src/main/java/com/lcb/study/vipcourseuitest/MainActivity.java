@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.lcb.study.vipcourseuitest.animation.AnimationActivity;
+import com.lcb.study.vipcourseuitest.binder.BinderActivity;
 import com.lcb.study.vipcourseuitest.bubble.BubbleActivity;
 import com.lcb.study.vipcourseuitest.flowlayout.FlowLayoutActivity;
 import com.lcb.study.vipcourseuitest.livedata.LiveDataActivity;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btBubble;
 
+    private Button btAidl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +53,9 @@ public class MainActivity extends AppCompatActivity {
         btAnimation = findViewById(R.id.bt_animation);
         btLiveData = findViewById(R.id.bt_livedata);
         btViewModel = findViewById(R.id.bt_viewmodel);
-        btNavigation=findViewById(R.id.bt_navigation);
-        btBubble=findViewById(R.id.bt_bubble);
+        btNavigation = findViewById(R.id.bt_navigation);
+        btBubble = findViewById(R.id.bt_bubble);
+        btAidl = findViewById(R.id.bt_aidl);
     }
 
     private void initListener() {
@@ -115,6 +119,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, BubbleActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btAidl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, BinderActivity.class);
                 startActivity(intent);
             }
         });

@@ -56,4 +56,10 @@
         android:layout_height="wrap_content"
         android:text="气泡"/>
 
+    <Button
+        android:id="@+id/bt_aidl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="AIDL"/>
+
 </LinearLayout>

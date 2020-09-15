@@ -1,1 +1,1 @@
-include ':app', ':ViewGroupEvent', ':annotation', ':annotation_compiler'
+include ':app', ':ViewGroupEvent', ':annotation', ':annotation_compiler', ':phone'
